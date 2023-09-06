@@ -1,0 +1,7 @@
+uvicorn[standard]
+fastapi
+cryptography
+requests
+openapi_schema_validator
+redis
+async-timeout
