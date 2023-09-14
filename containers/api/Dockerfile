@@ -2,7 +2,7 @@ FROM debian:bookworm-20230814-slim@sha256:a60c0c42bc6bdc09d91cd57067fcc952b68ad6
 
 MAINTAINER victor@sunet.se
 
-EXPOSE 80/tcp
+EXPOSE 8006/tcp
 
 # Metadata
 LABEL version="1.03"
@@ -58,4 +58,4 @@ USER wallet
 # HEALTHCHECK --interval=120s --timeout=15s --retries=1 --start-period=30s \
 #     CMD sh '. .venv/bin/activate && healthcheck.sh' || bash -c 'kill -s 15 1 && (sleep 7; kill -s 9 1)'
 
-CMD sh -c '. .venv/bin/activate && uvicorn src.wallet_registry.main:app --log-config ./logging.json --host 0.0.0.0 --port 80 --workers 1 --header server:wallet_registry'
+CMD sh -c '. .venv/bin/activate && uvicorn src.wallet_registry.main:app --log-config ./logging.json --host 0.0.0.0 --port 8006 --workers 1 --header server:wallet_registry'

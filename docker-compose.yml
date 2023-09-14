@@ -7,7 +7,7 @@ services:
       context: .
       dockerfile: containers/api/Dockerfile
     ports:
-      - "80:80"
+      - "8006:8006"
     depends_on:
       - "redis"
     restart: always
