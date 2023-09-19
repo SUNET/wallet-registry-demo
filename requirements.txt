@@ -712,3 +712,7 @@ websockets==11.0.3 \
     --hash=sha256:fb06eea71a00a7af0ae6aefbb932fb8a7df3cb390cc217d51a9ad7343de1b8d0 \
     --hash=sha256:ffd7dcaf744f25f82190856bc26ed81721508fc5cbf2a330751e135ff1283564
     # via uvicorn
+
+fastapi~=0.103.1
+redis~=5.0.0
+pydantic~=2.3.0

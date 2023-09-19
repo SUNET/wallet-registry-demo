@@ -2,14 +2,14 @@ version: "3.3"
 # Require docker-compose version 1.29
 # version: "3.9"
 services:
-  api:
+  authentic-source:
     build:
       context: .
-      dockerfile: containers/api/Dockerfile
+      dockerfile: containers/authentic_source/Dockerfile
     ports:
-      - "8006:8006"
+      - "8007:8007"
     depends_on:
-      - "redis"
+      - "redis-authentic_source"
     restart: always
     read_only: true
     cap_drop: [ALL]
@@ -22,9 +22,9 @@ services:
     tmpfs:
       - /dev/shm:ro,noexec,nosuid,nodev
     environment:
-      - REDIS_URL=redis
+      - REDIS_URL=redis-authentic_source
     #   - ACME_ROOT=${ACME_ROOT}
-  redis:
+  redis-authentic_source:
     image: redis:7.2.0-bookworm@sha256:57b3ebf7bac6c5a3835299835b96759f3c3f7ebe964a96bf2c35bd88d195fbba
     restart: always
     # read_only: true
@@ -36,6 +36,43 @@ services:
     # mem_reservation: "128m"
     # cpus: "1.75"
     volumes:
-      - ./data/redis:/data
+      - ./data/redis-authentic_source:/data
+    #tmpfs:
+    #  - /dev/shm:ro,noexec,nosuid,nodev
+  registry:
+    build:
+      context: .
+      dockerfile: containers/registry/Dockerfile
+    ports:
+      - "8006:8006"
+    depends_on:
+      - "redis-registry"
+    restart: always
+    read_only: true
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    # Require docker-compose version 1.29 and version: "3.3" in this file at the top
+    # mem_limit: "512m"
+    # mem_reservation: "128m"
+    # cpus: "1.75"
+    tmpfs:
+      - /dev/shm:ro,noexec,nosuid,nodev
+    environment:
+      - REDIS_URL=redis-registry
+    #   - ACME_ROOT=${ACME_ROOT}
+  redis-registry:
+    image: redis:7.2.0-bookworm@sha256:57b3ebf7bac6c5a3835299835b96759f3c3f7ebe964a96bf2c35bd88d195fbba
+    restart: always
+    # read_only: true
+    # cap_drop: [ALL]
+    # security_opt:
+    #   - no-new-privileges:true
+    # Require docker-compose version 1.29 and version: "3.3" in this file at the top
+    # mem_limit: "1g"
+    # mem_reservation: "128m"
+    # cpus: "1.75"
+    volumes:
+      - ./data/redis-registry:/data
     #tmpfs:
     #  - /dev/shm:ro,noexec,nosuid,nodev
