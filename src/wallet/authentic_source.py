@@ -1,6 +1,7 @@
 """Main module, FastAPI runs from here"""
 from __future__ import annotations
 
+import json
 import os
 import sys
 from typing import TYPE_CHECKING
@@ -91,11 +92,12 @@ async def get_degree(degree_id: str) -> Response:
 
     try:
         degree = await authentic_source_fetch_degree(redis_conn, degree_id)
-
         if degree is None:
             return JSONResponse(content={"status": "no such degree"})
 
-        return JSONResponse(content={"status": "ok", "degree": degree})
+        json_degree = json.loads(degree)
+
+        return JSONResponse(content={"status": "ok", "degree": json_degree})
 
     except (ValueError, TypeError) as _:
         return JSONResponse(status_code=400, content={"error": "Invalid format"})

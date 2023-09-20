@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import json
+
 import secrets
 
 from pydantic import BaseModel
@@ -80,7 +82,42 @@ async def authentic_source_login(
         raise ValueError("Wrong format")
 
     document_id = secrets.token_hex(64)
-    if not isinstance(document_id, str):
-        raise ValueError("error with db")
-    await redis_conn.set(document_id, create_document(authentic_source_login_input.user_id))
+
+    degree = create_document(authentic_source_login_input.user_id)
+    await redis_conn.set(document_id, degree)
+
+    ret_val = {
+        "attributes": {
+            "document_type": "testv1",
+            "document_id": "1234567890",
+            "authentic_source": "authentic_source",
+            "authentic_source_person_id": "authentic_source_person_id",
+            "revocation_id": "revocation_id",
+            "first_name": "first_name",
+            "last_name": "last_name",
+            "date_of_birth": "date_of_birth",
+            "uid": authentic_source_login_input.user_id,
+            "last_name_at_birth": "last_name_at_birth",
+            "first_name_at_birth": "first_name_at_birth",
+            "place_of_birth": "place_of_birth",
+            "current_address": "current_address",
+            "gender": "gender"
+        },
+        "document": {
+            "pda1": degree,
+            "ehic": None,
+            "testv1": {
+                "name": {
+                    "given_name": "given_name",
+                    "family_name": "family_name"
+                },
+                "address": {
+                    "country": "country",
+                    "street": "street"
+                }
+            }
+        }
+    }
+
+    await redis_conn.set(document_id, json.dumps(ret_val))
     return document_id
